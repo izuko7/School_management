@@ -3,13 +3,13 @@ import User from "../models/userModel.js"
 
 
 // ajouter un utilisateur
-const createUser = (name, role) => {
-    const user = new User(name, role);
+const createUser = (name, role, motdepasse) => {
+    const user = new User(name, role, motdepasse);
     const insertUser = db.prepare(`
-        INSERT INTO users(name, role) 
-        VALUES(?, ?)
+        INSERT INTO users(name, role, motdepasse) 
+        VALUES(?, ?, ?)
     `);
-    return insertUser.run(user.name, user.role);
+    return insertUser.run(user.name, user.role, user.motdepasse);
 };
 
 
