@@ -1,5 +1,6 @@
 import { question, fermerInterface } from "./interface.js";
 import { seConnecter, userConnecter } from "./connexion.js";
+import { afficherMenuAdmin } from "./menus/menuAdmin.js";
 
 // Afficher le message de bienvenue
 const menuPrincipal = async () => {
@@ -19,7 +20,7 @@ const menuPrincipal = async () => {
             case "1":
                 const connecte = await seConnecter();
                 if(connecte) {
-                    if(userConnecter.role === "admin") console.log("Menu admin à venir...");
+                    if(userConnecter.role === "admin") await afficherMenuAdmin();
                     else if(userConnecter.role === "teacher") console.log("Menu professeur à venir...");
                     else if(userConnecter.role === "student") console.log("Menu étudiant à venir...");
                 }
