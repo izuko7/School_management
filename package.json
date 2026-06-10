@@ -1,7 +1,7 @@
 {
   "name": "school-management",
   "version": "1.0.0",
-  "description": "",
+  "description": "Application CLI (terminal) de gestion complète d'un système scolaire, développée en Node.js avec SQLite.",
   "main": "main.js",
   "scripts": {
     "start": "node db/tables.js",
@@ -14,5 +14,13 @@
   "dependencies": {
     "better-sqlite3": "^12.10.0",
     "dayjs": "^1.11.21"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/izuko7/School_management.git"
+  },
+  "bugs": {
+    "url": "https://github.com/izuko7/School_management/issues"
+  },
+  "homepage": "https://github.com/izuko7/School_management#readme"
 }

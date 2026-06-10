@@ -1,5 +1,5 @@
 import { question, fermerInterface } from "./interface.js";
-import { seConnecter } from "./connexion.js";
+import { seConnecter, userConnecter } from "./connexion.js";
 
 // Afficher le message de bienvenue
 const menuPrincipal = async () => {
@@ -18,6 +18,11 @@ const menuPrincipal = async () => {
         switch (choix) {
             case "1":
                 const connecte = await seConnecter();
+                if(connecte) {
+                    if(userConnecter.role === "admin") console.log("Menu admin à venir...");
+                    else if(userConnecter.role === "teacher") console.log("Menu professeur à venir...");
+                    else if(userConnecter.role === "student") console.log("Menu étudiant à venir...");
+                }
                 break;
             case "0":
                 actif = false;
