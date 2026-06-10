@@ -15,7 +15,7 @@ const seConnecter = async () => {
     const user = users.find(u => u.name === nom && u.motdepasse === motdepasse);
  
     if (!user) {
-        console.log("❌ Utilisateur introuvable. Vérifiez votre nom et votre mot de passe.");
+        console.log("❌ Utilisateur introuvable. vérifiez votre nom et votre mot de passe.");
         return false;
     }
  
