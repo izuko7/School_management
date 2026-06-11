@@ -1,7 +1,7 @@
 import { question } from "./interface.js";
 import { getAllUsers } from "../services/userService.js";
 
-let userConnecter = null;
+export const session = { userConnecter: null };
 
 const seConnecter = async () => {
     console.log("\n≈≈≈ CONNEXION ≈≈≈");
@@ -9,16 +9,16 @@ const seConnecter = async () => {
     const motdepasse = await question("Mot de passe : ");
 
     const users = getAllUsers();
-    const user = users.find(u => u.name === nom && u.motdepasse === motdepasse);
+    const user = users.find(u => u.name === nom && u.motdepasse  === motdepasse);
 
     if (!user) {
         console.log("❌ Utilisateur introuvable. Vérifiez votre nom et mot de passe.");
         return false;
     }
 
-    userConnecter = user;
-    console.log(`✅ Bienvenue ${userConnecter.name} (${userConnecter.role}) !`);
+    session.userConnecter = user;
+    console.log(`✅ Bienvenue ${session.userConnecter.name} (${session.userConnecter.role}) !`);
     return true;
 };
 
-export { seConnecter, userConnecter };
+export { seConnecter };

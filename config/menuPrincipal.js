@@ -1,30 +1,35 @@
 import { question, fermerInterface } from "./interface.js";
-import { seConnecter, userConnecter } from "./connexion.js";
-import { afficherMenuAdmin } from "./menus/menuAdmin.js";
+import { seConnecter, session } from "./connexion.js";
+import { menuAdmin } from "./menus/menuAdmin.js";
+import { menuTeacher } from "./menus/menuTeacher.js";
+import { menuStudent } from "./menus/menuStudent.js";
 
 // Afficher le message de bienvenue
 const menuPrincipal = async () => {
-    console.log( "╔════════════════════════════════════════╗")
-     console.log("║   BIENVENU SUR VOTRE APPLICATION       ║")            
-     console.log("║         DE GESTION D'ECOLE             ║")
-     console.log("╚════════════════════════════════════════╝")
+    console.log("╔════════════════════════════════════════╗");
+    console.log("║   BIENVENU SUR VOTRE APPLICATION       ║");
+    console.log("║         DE GESTION D'ECOLE             ║");
+    console.log("╚════════════════════════════════════════╝");
+
     let actif = true;
     while (actif) {
-        console.log("〚=== GESTION SCOLAIRE ===〛");
+        console.log("\n〚=== GESTION SCOLAIRE ===〛");
         console.log("1. Connexion");
         console.log("0. Quitter");
 
         const choix = await question("Choix : ");
 
         switch (choix) {
-            case "1":
+            case "1": {
                 const connecte = await seConnecter();
-                if(connecte) {
-                    if(userConnecter.role === "admin") await afficherMenuAdmin();
-                    else if(userConnecter.role === "teacher") console.log("Menu professeur à venir...");
-                    else if(userConnecter.role === "student") console.log("Menu étudiant à venir...");
+                if (connecte) {
+                    if (session.userConnecter.role === "admin") await menuAdmin();
+                    else if (session.userConnecter.role === "teacher") await menuTeacher();
+                    else if (session.userConnecter.role === "student") await menuStudent();
+                    else console.log("❌ Rôle inconnu.");
                 }
                 break;
+            }
             case "0":
                 actif = false;
                 console.log("\nAu revoir ! 👋 Merci");
@@ -36,4 +41,4 @@ const menuPrincipal = async () => {
     }
 };
 
-export { menuPrincipal }
+export { menuPrincipal };

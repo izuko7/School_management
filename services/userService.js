@@ -20,6 +20,32 @@ const getAllUsers = () => {
         `).all();
 };
 
+// rechercher un utilisateur
+const getUserById = (id) => {
+    return db.prepare(`
+        SELECT * FROM users
+        WHERE id = ?
+    `).get(id);
+};
+
+
+// modifier un utilisateur
+const updateUser = (id, data) => {
+    const currentUser = getUserById(id);
+    if (!currentUser) {
+        throw new Error(`Utilisateur avec l'id ${id} introuvable.`);
+    }
+
+    const name = data.name ?? currentUser.name;
+    const role = data.role ?? currentUser.role;
+    const motdepasse = data.motdepasse ?? currentUser.motdepasse;
+
+    const stmt = db.prepare(`
+        UPDATE users SET name = ?, role = ?, motdepasse = ?
+        WHERE id = ?
+    `);
+    return stmt.run(name, role, motdepasse, id);
+};
 
 // supprimer un utilisateur
 const deleteUser = (id) => {
@@ -29,4 +55,4 @@ const deleteUser = (id) => {
 };
 
 
-export  {createUser, getAllUsers, deleteUser}
+export  {createUser, getAllUsers, getUserById, updateUser, deleteUser}

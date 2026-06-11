@@ -1,9 +1,10 @@
 import { question }  from "../interface.js";
+import { gestionUsers } from "../gestion/gestionUser.js";
 
-const afficherMenuAdmin = async () => {
+const menuAdmin = async () => {
     let actif = true;
     while(actif) {
-         console.log("\n〚=== MENU ADMINISTRATEUR ===〛");
+        console.log("\n〚=== MENU ADMINISTRATEUR ===〛");        
         console.log("1. Gestion des utilisateurs");
         console.log("2. Gestion des étudiants");
         console.log("3. Gestion des professeurs");
@@ -16,13 +17,15 @@ const afficherMenuAdmin = async () => {
         const choix = await question("Choix: ");
 
         switch (choix) {
-            case "1": console.log("→ Gestion users à venir..."); break;
+            case "1": 
+                await gestionUsers(choix);
+                break;
             case "2": console.log("→ Gestion étudiants à venir..."); break;
-            case "3": console.log("→ Gestion professeurs à venir..."); break;
-            case "4": console.log("→ Gestion matières à venir..."); break;
-            case "5": console.log("→ Gestion notes à venir..."); break;
-            case "6": console.log("→ Gestion absences à venir..."); break;
-            case "7": console.log("→ Statistiques à venir..."); break;
+            case "3": console.log("→ Gestion des professeurs à venir..."); break;
+            case "4": console.log("→ Gestion des matières à venir..."); break;
+            case "5": console.log("→ Gestion des notes à venir..."); break;
+            case "6": console.log("→  Gestion des absences à venir..."); break;
+            case "7": console.log("→  Gestion des statistiques à venir..."); break;
             case "0":
                 actif = false;
                 console.log("👋 Déconnexion.");
@@ -33,4 +36,4 @@ const afficherMenuAdmin = async () => {
     }
 };
 
-export { afficherMenuAdmin }
+export { menuAdmin }
