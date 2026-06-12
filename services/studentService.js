@@ -31,12 +31,22 @@ const getStudentById = (id) => {
 
 // faire une mise à jour
 const updateStudent = (id, data) => {
-const updateStudentStmt = db.prepare(`
+    const current = getStudentById(id);
+    if (!current) {
+        throw new Error(`Étudiant avec l'id ${id} introuvable.`);
+    }
+
+    const matricule = data.matricule ?? current.matricule;
+    const nom = data.nom ?? current.nom;
+    const prenom = data.prenom ?? current.prenom;
+    const age = data.age ?? current.age;
+    const classe = data.classe ?? current.classe;
+
+    return db.prepare(`
         UPDATE students SET matricule = ?, nom = ?, prenom = ?, age = ?, classe = ?
         WHERE id = ?
-    `);
-    return updateStudentStmt.run(data.matricule, data.nom, data.prenom, data.age, data.classe, id);
-}
+    `).run(matricule, nom, prenom, age, classe, id);
+};
 
 
 // supprimer un étudiant

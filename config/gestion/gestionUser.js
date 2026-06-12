@@ -32,19 +32,6 @@ const gestionUsers = async () => {
                 });
                 break;
             }
-                const users = getAllUsers();
-                console.log("╔════════════════════════════════════════╗");
-                console.log("║          LISTE DES UTILISATEURS        ║");
-                console.log("╚════════════════════════════════════════╝");
-                users.forEach(user => {
-                    console.log(`
-                ID: ${user.id};
-                Nom: ${user.name}
-                Rôle: ${user.role}
-                Mot de passe: ${user.motdepasse}
-            `);
-                });
-                break;
             case "2": {
                 const nom = await question("Nom : ");
                 const role = await question("Rôle (admin | teacher | student) : ");

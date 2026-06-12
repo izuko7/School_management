@@ -1,5 +1,6 @@
 import { question }  from "../interface.js";
 import { gestionUsers } from "../gestion/gestionUser.js";
+import { gestionStudents } from "../gestion/gestionStudent.js";
 
 const menuAdmin = async () => {
     let actif = true;
@@ -18,9 +19,12 @@ const menuAdmin = async () => {
 
         switch (choix) {
             case "1": 
-                await gestionUsers(choix);
+                await gestionUsers();
                 break;
-            case "2": console.log("→ Gestion étudiants à venir..."); break;
+
+            case "2": 
+                await gestionStudents();
+                break;
             case "3": console.log("→ Gestion des professeurs à venir..."); break;
             case "4": console.log("→ Gestion des matières à venir..."); break;
             case "5": console.log("→ Gestion des notes à venir..."); break;
