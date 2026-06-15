@@ -32,12 +32,16 @@ const getTeacherById = (id) => {
 
 // faire une mise à jour
 const updateTeacher = (id, data) => {
-const updateTeacherStmt = db.prepare(`
-        UPDATE teachers SET nom = ?, matiere = ?
-        WHERE id = ?
-    `);
-    return updateTeacherStmt.run(data.nom, data.matiere, id);
-}
+    const current = getTeacherById(id);
+    if (!current) throw new Error(`Professeur avec l'id ${id} introuvable.`);
+
+    const nom = data.nom ?? current.nom;
+    const matiere = data.matiere ?? current.matiere;
+
+    return db.prepare(`
+        UPDATE teachers SET nom = ?, matiere = ? WHERE id = ?
+    `).run(nom, matiere, id);
+};
 
 
 // supprimer un enseignant
