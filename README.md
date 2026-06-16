@@ -15,11 +15,17 @@ Application CLI (terminal) de gestion complète d'un système scolaire, dévelop
 npm install
 ```
 
+```bash
+npm install better-sqlite3
+```
+
+```bash
+npm install dayjs
+```
+
 ## Lancement
 
 ```bash
-npm start
-# ou
 node main.js
 ```
 
