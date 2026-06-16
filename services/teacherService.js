@@ -46,10 +46,17 @@ const updateTeacher = (id, data) => {
 
 // supprimer un enseignant
 const deleteTeacher = (id) => {
-    return db.prepare(`
-            DELETE FROM teachers WHERE id = ?
-        `).run(id);
+    const current = getTeacherById(id);
+    if (!current) throw new Error(`Professeur avec l'id ${id} introuvable.`);
+
+    // Supprimer la matière associée dans subjects
+    db.prepare(`
+        DELETE FROM subjects WHERE teacher_id = ?
+    `).run(id);
+
+    return db.prepare(`DELETE FROM teachers WHERE id = ?`).run(id);
 };
+
 
 
 export { createTeacher, getAllTeachers, getTeacherById, updateTeacher, deleteTeacher }

@@ -46,6 +46,11 @@ const updateSubject = (id, data) => {
 const deleteSubject = (id) => {
     const current = getSubjectById(id);
     if (!current) throw new Error(`Matière avec l'id ${id} introuvable.`);
+
+    db.prepare(`
+        UPDATE teachers SET matiere  = NULL WHERE id = ?
+        `).run(current.teacher_id);
+
     return db.prepare(`DELETE FROM subjects WHERE id = ?`).run(id);
 };
 

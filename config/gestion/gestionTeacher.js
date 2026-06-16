@@ -58,12 +58,12 @@ const gestionTeacher = async () => {
                     console.log("❌ Enseignant introuvable.");
                 } else {
                     deleteTeacher(Number(id));
-                    console.log("🗑️  Enseignant supprimé."); // ← corrigé (était "Étudiant")
+                    console.log("🗑️  Enseignant supprimé."); 
                 }
                 break;
             }
             case "4": {
-                const id = await question("ID de l'enseignant : "); // ← corrigé (était "étudiant")
+                const id = await question("ID de l'enseignant : "); 
                 const teacher = getTeacherById(Number(id));
                 if (!teacher) {
                     console.log("❌ Enseignant introuvable.");

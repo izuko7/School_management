@@ -35,7 +35,7 @@ const tableTeachers = `
      CREATE TABLE IF NOT EXISTS teachers(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         nom TEXT NOT NULL,
-        matiere TEXT NOT NULL
+        matiere TEXT
     )
 `;
 db.exec(tableTeachers);
