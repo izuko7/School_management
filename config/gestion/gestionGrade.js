@@ -6,6 +6,7 @@ import {
     getMoyenneBySubject, getMoyenneGenerale,
     updateGrade, deleteGrade
 } from "../../services/gradeService.js";
+import { getSubjectByName } from "../../services/subjectService.js";
 
 const gestionGrades = async () => {
     let actif = true;
@@ -82,7 +83,7 @@ const gestionGrades = async () => {
                 break;
             }
             case "5": {
-                const nom = await question("Nom de la matiere : "); 
+                const nom = await question("Nom de la matiere : ");
                 const grades = getGradesBySubjectName(nom);
                 if (grades.length === 0) {
                     console.log("Aucune note pour cette matiere.");
@@ -103,7 +104,7 @@ const gestionGrades = async () => {
             case "6": {
                 const student_id = await question("ID de l'etudiant : ");
                 const nom_matiere = await question("Nom de la matiere : ");
-                const subject = db.prepare("SELECT id FROM subjects WHERE nom = ?").get(nom_matiere);
+                const subject = getSubjectByName(nom_matiere);
                 if (!subject) {
                     console.log(`Matiere "${nom_matiere}" introuvable.`);
                     break;
