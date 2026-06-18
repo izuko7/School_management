@@ -1,54 +1,70 @@
 import db from "../db/database.js";
 import Absence from "../models/absenceModel.js";
 
-// ajouter une absence
+// Ajouter une absence
 const createAbsence = (student_id, date, status) => {
-    // Vérifier que l'étudiant existe
     const student = db.prepare("SELECT id FROM students WHERE id = ?").get(student_id);
-    if (!student) {
-        throw new Error(`Etudiant avec l'id ${student_id} introuvable.`);
-    }
+    if (!student) throw new Error(`Etudiant avec l'id ${student_id} introuvable.`);
 
-     const absence = new Absence(student_id, date, status);
-    const stmt = db.prepare(`
-        INSERT INTO absences(student_id, date, status) 
-        VALUES(?, ?, ?)
-        `);
-    return stmt.run(absence.student_id, absence.date, absence.status);
+    const absence = new Absence(student_id, date, status);
+    return db.prepare(`
+        INSERT INTO absences(student_id, date, status) VALUES(?, ?, ?)
+    `).run(absence.student_id, absence.date, absence.status);
 };
 
-// afficher toutes les absences
+// Afficher toutes les absences
 const getAllAbsences = () => {
-    return db.prepare("SELECT * FROM absences").all();
+    return db.prepare(`
+        SELECT absences.id, students.nom, students.prenom, absences.date, absences.status
+        FROM absences
+        JOIN students ON absences.student_id = students.id
+        ORDER BY absences.date DESC
+    `).all();
 };
 
-// afficher une absence grâce à son id
+// Afficher une absence par son id
 const getAbsenceById = (id) => {
-    return db.prepare("SELECT * FROM absences WHERE id = ?").get(id);
+    return db.prepare(`
+        SELECT absences.id, students.nom, students.prenom, absences.date, absences.status
+        FROM absences
+        JOIN students ON absences.student_id = students.id
+        WHERE absences.id = ?
+    `).get(id);
 };
 
-// faire une mise à jour (sécurisé)
+// Afficher toutes les absences d'un etudiant
+const getAbsencesByStudent = (student_id) => {
+    const student = db.prepare("SELECT id FROM students WHERE id = ?").get(student_id);
+    if (!student) throw new Error(`Etudiant avec l'id ${student_id} introuvable.`);
+
+    return db.prepare(`
+        SELECT absences.id, students.nom, students.prenom, absences.date, absences.status
+        FROM absences
+        JOIN students ON absences.student_id = students.id
+        WHERE absences.student_id = ?
+        ORDER BY absences.date DESC
+    `).all(student_id);
+};
+
+// Modifier une absence
 const updateAbsence = (id, data) => {
-    const currentAbsence = getAbsenceById(id);
-    if (!currentAbsence) {
-        throw new Error(`Absence avec l'id ${id} introuvable.`);
-    }
+    const current = getAbsenceById(id);
+    if (!current) throw new Error(`Absence avec l'id ${id} introuvable.`);
 
-    const student_id = data.student_id ?? currentAbsence.student_id;
-    const date = data.date ?? currentAbsence.date;
-    const status = data.status ?? currentAbsence.status;
+    const student_id = data.student_id ?? current.student_id;
+    const date = data.date ?? current.date;
+    const status = data.status ?? current.status;
 
-    const stmt = db.prepare(`
-        UPDATE absences SET student_id = ?, date = ?, status = ?
-        WHERE id = ?
-    `);
-    return stmt.run(student_id, date, status, id);
+    return db.prepare(`
+        UPDATE absences SET student_id = ?, date = ?, status = ? WHERE id = ?
+    `).run(student_id, date, status, id);
 };
 
-// supprimer une absence
+// Supprimer une absence
 const deleteAbsence = (id) => {
+    const current = getAbsenceById(id);
+    if (!current) throw new Error(`Absence avec l'id ${id} introuvable.`);
     return db.prepare("DELETE FROM absences WHERE id = ?").run(id);
 };
 
-
-export { createAbsence, getAllAbsences, getAbsenceById, updateAbsence, deleteAbsence };
+export { createAbsence, getAllAbsences, getAbsenceById, getAbsencesByStudent, updateAbsence, deleteAbsence };

@@ -4,6 +4,7 @@ import { gestionStudents } from "../gestion/gestionStudent.js";
 import { gestionTeacher } from "../gestion/gestionTeacher.js";
 import { gestionSubject } from "../gestion/gestionSubject.js";
 import { gestionGrades } from "../gestion/gestionGrade.js";
+import { gestionAbsence     } from "../gestion/gestionAbsence.js";
 
 const menuAdmin = async () => {
     let actif = true;
@@ -37,7 +38,8 @@ const menuAdmin = async () => {
             case "5": 
                 await gestionGrades();
                 break;
-            case "6": console.log("→  Gestion des absences à venir..."); break;
+            case "6": 
+                await gestionAbsence();
             case "7": console.log("→  Gestion des statistiques à venir..."); break;
             case "0":
                 actif = false;
