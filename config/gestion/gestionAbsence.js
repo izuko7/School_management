@@ -63,7 +63,7 @@ const gestionAbsence = async () => {
             }
             case "4": {
                 const id = await question("ID de l'absence a modifier : ");
-                const status = await question("Nouveau status (present/absent/retard) : ");
+                const status = await question("Nouveau status (Justifiée/Non justifiée) : ");
                 updateAbsence(Number(id), { status });
                 console.log("Absence mise a jour.");
                 break;

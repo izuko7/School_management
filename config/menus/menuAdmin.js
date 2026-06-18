@@ -5,6 +5,7 @@ import { gestionTeacher } from "../gestion/gestionTeacher.js";
 import { gestionSubject } from "../gestion/gestionSubject.js";
 import { gestionGrades } from "../gestion/gestionGrade.js";
 import { gestionAbsence     } from "../gestion/gestionAbsence.js";
+import { gestionStatistiques } from "../gestion/gestionStatistique.js";
 
 const menuAdmin = async () => {
     let actif = true;
@@ -40,13 +41,14 @@ const menuAdmin = async () => {
                 break;
             case "6": 
                 await gestionAbsence();
-            case "7": console.log("→  Gestion des statistiques à venir..."); break;
+            case "7": 
+                await gestionStatistiques();
             case "0":
                 actif = false;
-                console.log("👋 Déconnexion.");
+                console.log(" Déconnexion.");
                 break;
             default:
-                console.log("❌ Choix invalide.");
+                console.log(" Choix invalide.");
         }
     }
 };
