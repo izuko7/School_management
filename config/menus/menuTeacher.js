@@ -1,4 +1,7 @@
 import { question } from "../interface.js";
+import { gestionGrades } from "../gestion/gestionGrade.js";
+import { gestionAbsence } from "../gestion/gestionAbsence.js";
+import { gestionStatistiques } from "../gestion/gestionStatistique.js";
 
 const menuTeacher = async () => {
     let actif = true;
@@ -12,15 +15,21 @@ const menuTeacher = async () => {
         const choix = await question("Choix: ");
 
         switch(choix) {
-            case "1": console.log("→ Gestion des notes à venir..."); break;
-            case "2": console.log("→ Gestion des notes à venir..."); break;
-            case "3": console.log("→ Gestion des statisques à venir..."); break;
+            case "1": 
+                await gestionGrades();
+                break;
+            case "2": 
+                await gestionAbsence();
+                break;
+            case "3": 
+                await gestionStatistiques();
+                break;
             case "0": 
                 actif = false;
-                console.log("👋 Déconnexion.");
+                console.log(" Déconnexion.");
                 break;
             default:
-                console.log("❌ Choix invalide.");
+                console.log(" Choix invalide.");
         }
     } 
 }

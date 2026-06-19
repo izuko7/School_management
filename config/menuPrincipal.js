@@ -26,17 +26,17 @@ const menuPrincipal = async () => {
                     if (session.userConnecter.role === "admin") await menuAdmin();
                     else if (session.userConnecter.role === "teacher") await menuTeacher();
                     else if (session.userConnecter.role === "student") await menuStudent();
-                    else console.log("❌ Rôle inconnu.");
+                    else console.log(" Rôle inconnu.");
                 }
                 break;
             }
             case "0":
                 actif = false;
-                console.log("\nAu revoir ! 👋 Merci");
+                console.log("\nAu revoir !  Merci");
                 fermerInterface();
                 break;
             default:
-                console.log("❌ Choix invalide.");
+                console.log(" Choix invalide.");
         }
     }
 };

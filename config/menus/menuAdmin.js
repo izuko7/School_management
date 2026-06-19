@@ -41,8 +41,10 @@ const menuAdmin = async () => {
                 break;
             case "6": 
                 await gestionAbsence();
+                break;
             case "7": 
                 await gestionStatistiques();
+                break;
             case "0":
                 actif = false;
                 console.log(" Déconnexion.");
