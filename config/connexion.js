@@ -1,6 +1,7 @@
 import { question } from "./interface.js";
 import { getAllUsers } from "../services/userService.js";
 import db from "../db/database.js";
+import { logAuth, logError } from "../utils/logger.js";
 
 export const session = { userConnecter: null, student: null };
 
@@ -14,6 +15,7 @@ const seConnecter = async () => {
 
     if (!user) {
         console.log("Utilisateur introuvable. Verifiez votre nom et mot de passe.");
+        logError(`Tentative de connexion échouée : ${nom}`);
         return false;
     }
 
@@ -28,14 +30,17 @@ const seConnecter = async () => {
 
         if (!student) {
             console.log("Aucun etudiant trouve correspondant a votre compte.");
+            logError(`Connexion étudiant sans correspondance ${nom}`);
             session.userConnecter = null;
             return false;
         }
 
         session.student = student;
         console.log(`Bienvenue ${student.nom} ${student.prenom} (${user.role}) !`);
+        logAuth(`Connexion reussie : ${student.nom} ${student.prenom} (étudiant)`);
     } else {
         console.log(`Bienvenue ${user.name} (${user.role}) !`);
+        logAuth(`Connexion reussie : ${user.name} (${user.role})`)
     }
 
     return true;

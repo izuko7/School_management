@@ -53,6 +53,7 @@ const gestionUsers = async () => {
             case "5": {
                 const id = await question("ID de l'utilisateur : ");
                 console.log(getUserById(Number(id)));
+                break;
             }
             case "0":
                 actif = false;
