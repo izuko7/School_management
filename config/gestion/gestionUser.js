@@ -37,7 +37,7 @@ const gestionUsers = async () => {
                 const role = await question("Rôle (admin | teacher | student) : ");
                 const password = await question("Mot de passe : ");
                 createUser(nom, role, password);
-                console.log("✅ Utilisateur ajouté.");
+                console.log(" Utilisateur ajouté.");
                 break;
             }
             case "3": {
@@ -46,8 +46,12 @@ const gestionUsers = async () => {
             }
             case "4": {
                 const id = await question("ID à supprimer : ");
-                deleteUser(Number(id));
-                console.log("🗑️  Utilisateur supprimé.");
+                try{
+                    deleteUser(Number(id));
+                    console.log("  Utilisateur supprimé.");
+                } catch (e) {
+                    console.log(`Erreur : ${e.message}`)
+                }
                 break;
             }
             case "5": {
@@ -59,7 +63,7 @@ const gestionUsers = async () => {
                 actif = false;
                 break;
             default:
-                console.log("❌ Choix invalide.")
+                console.log(" Choix invalide.")
         }
     }
 };
