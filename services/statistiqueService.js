@@ -1,8 +1,10 @@
 import db from "../db/database.js";
 import { getMoyenneGenerale } from "./gradeService.js";
+import { logInfo, logWarn } from "../utils/logger.js";
 
 // Classement des étudiants par moyenne
 const getClassement = () => {
+    logInfo("Calcul du classement des étudiants.");
     const students = db.prepare("SELECT id, nom, prenom FROM students").all();
 
     const classement = students.map(student => {
@@ -15,23 +17,29 @@ const getClassement = () => {
         };
     });
 
-    return classement.filter(s => s.moyenne !== null).sort((a, b) => b.moyenne - a.moyenne);
+    const result = classement.filter(s => s.moyenne !== null).sort((a, b) => b.moyenne - a.moyenne);
+    if (result.length === 0) logWarn("Classement vide : aucun étudiant avec des notes.");
+    return result;
 };
 
 // Nombre d'absences par étudiant
 const getNbAbsenceParEtudiant = () => {
-    return db.prepare(`
+    logInfo("Récupération du nombre d'absences par étudiant.");
+    const result = db.prepare(`
         SELECT students.id, students.nom, students.prenom, COUNT(absences.id) AS nb_absences
         FROM students
         LEFT JOIN absences ON absences.student_id = students.id
         GROUP BY students.id
         ORDER BY nb_absences DESC
-    `).all(); 
+    `).all();
+    if (result.length === 0) logWarn("Aucune donnée d'absence trouvée.");
+    return result;
 };
 
 // Taux de présence par étudiant
 const getTauxPresence = () => {
-    return db.prepare(`
+    logInfo("Calcul du taux de présence par étudiant.");
+    const result = db.prepare(`
         SELECT students.id, students.nom, students.prenom,
         COUNT(absences.id) AS total,
         SUM(CASE WHEN absences.status = 'Justifiée' THEN 1 ELSE 0 END) AS presents,
@@ -44,11 +52,14 @@ const getTauxPresence = () => {
         GROUP BY students.id
         ORDER BY taux_presence DESC
     `).all();
+    if (result.length === 0) logWarn("Aucune donnée de présence trouvée.");
+    return result;
 };
 
 // Meilleur étudiant par matière
-const getMeilleurParMatiere = (subject_id) => { 
-    return db.prepare(`
+const getMeilleurParMatiere = (subject_id) => {
+    logInfo(`Recherche meilleur étudiant pour matière id ${subject_id}.`);
+    const result = db.prepare(`
         SELECT students.id, students.nom, students.prenom, AVG(grades.note) AS moyenne
         FROM grades
         JOIN students ON grades.student_id = students.id
@@ -57,11 +68,14 @@ const getMeilleurParMatiere = (subject_id) => {
         ORDER BY moyenne DESC
         LIMIT 1
     `).get(subject_id) ?? null;
+    if (!result) logWarn(`Aucun étudiant trouvé pour matière id ${subject_id}.`);
+    return result;
 };
 
 // Pire étudiant par matière
 const getPireParMatiere = (subject_id) => {
-    return db.prepare(`
+    logInfo(`Recherche pire étudiant pour matière id ${subject_id}.`);
+    const result = db.prepare(`
         SELECT students.id, students.nom, students.prenom, AVG(grades.note) AS moyenne
         FROM grades
         JOIN students ON grades.student_id = students.id
@@ -70,10 +84,13 @@ const getPireParMatiere = (subject_id) => {
         ORDER BY moyenne ASC
         LIMIT 1
     `).get(subject_id) ?? null;
+    if (!result) logWarn(`Aucun étudiant trouvé pour matière id ${subject_id}.`);
+    return result;
 };
 
 // Meilleur étudiant général
 const getMeilleurEtudiant = () => {
+    logInfo("Recherche du meilleur étudiant général.");
     const students = db.prepare("SELECT id, nom, prenom FROM students").all();
     let meilleur = null;
 
@@ -85,11 +102,13 @@ const getMeilleurEtudiant = () => {
             }
         }
     }
+    if (!meilleur) logWarn("Aucun meilleur étudiant trouvé : données insuffisantes.");
     return meilleur;
 };
 
 // Pire étudiant général
 const getPireEtudiant = () => {
+    logInfo("Recherche du pire étudiant général.");
     const students = db.prepare("SELECT id, nom, prenom FROM students").all();
     let pire = null;
 
@@ -101,6 +120,7 @@ const getPireEtudiant = () => {
             }
         }
     }
+    if (!pire) logWarn("Aucun pire étudiant trouvé : données insuffisantes.");
     return pire;
 };
 
