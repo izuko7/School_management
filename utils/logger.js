@@ -26,7 +26,7 @@ const log = (type, message) => {
 
     if (process.env.NODE_ENV !== "production") {
         const couleur = COLORS[type] ?? COLORS.RESET;
-        console.log(`${couleur}${ligne.trim()}${COLORS.RESET}`);
+        // console.log(`${couleur}${ligne.trim()}${COLORS.RESET}`);
     }
 };
 

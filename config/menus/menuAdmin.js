@@ -6,8 +6,10 @@ import { gestionSubject } from "../gestion/gestionSubject.js";
 import { gestionGrades } from "../gestion/gestionGrade.js";
 import { gestionAbsence     } from "../gestion/gestionAbsence.js";
 import { gestionStatistiques } from "../gestion/gestionStatistique.js";
+import { logInfo, logWarn, logAuth } from "../../utils/logger.js";
 
 const menuAdmin = async () => {
+    logInfo("Entrée dans le menu administrateur");
     let actif = true;
     while(actif) {
         console.log("\n〚=== MENU ADMINISTRATEUR ===〛");        
@@ -23,33 +25,49 @@ const menuAdmin = async () => {
         const choix = await question("Choix: ");
 
         switch (choix) {
-            case "1": 
+            case "1":
+                logInfo("Admin — accès : gestion des utilisateurs");
                 await gestionUsers();
                 break;
 
-            case "2": 
+            case "2":
+                logInfo("Admin — accès : gestion des étudiants");
                 await gestionStudents();
                 break;
-            case "3": 
+
+            case "3":
+                logInfo("Admin — accès : gestion des professeurs");
                 await gestionTeacher();
                 break;
-            case "4": 
+
+            case "4":
+                logInfo("Admin — accès : gestion des matières");
                 await gestionSubject();
                 break;
-            case "5": 
+
+            case "5":
+                logInfo("Admin — accès : gestion des notes");
                 await gestionGrades();
                 break;
-            case "6": 
+
+            case "6":
+                logInfo("Admin — accès : gestion des absences");
                 await gestionAbsence();
                 break;
-            case "7": 
+
+            case "7":
+                logInfo("Admin — accès : statistiques");
                 await gestionStatistiques();
                 break;
+
             case "0":
                 actif = false;
+                logAuth("Déconnexion administrateur");
                 console.log(" Déconnexion.");
                 break;
+
             default:
+                logWarn(`Choix invalide dans le menu admin : "${choix}"`);
                 console.log(" Choix invalide.");
         }
     }
