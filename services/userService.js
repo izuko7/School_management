@@ -3,14 +3,14 @@ import User from "../models/userModel.js";
 import { logInfo, logSucces, logError } from "../utils/logger.js";
 
 // Ajouter un utilisateur
-const createUser = (name, role, motdepasse) => {
+const createUser = (name, role, pseudoname, motdepasse) => {
     logInfo(`Tentative création utilisateur : ${name} (${role})`);
-    const user = new User(name, role, motdepasse);
+    const user = new User(name, role, pseudoname, motdepasse);
     const insertUser = db.prepare(`
-        INSERT INTO users(name, role, motdepasse) 
-        VALUES(?, ?, ?)
+        INSERT INTO users(name, role, pseudoname, motdepasse) 
+        VALUES(?, ?, ?, ?)
     `);
-    const result = insertUser.run(user.name, user.role, user.motdepasse);
+    const result = insertUser.run(user.name, user.role, user.pseudoname, user.motdepasse);
     logSucces(`Utilisateur créé : ${name} (${role})`);
     return result;
 };
@@ -39,13 +39,14 @@ const updateUser = (id, data) => {
 
     const name = data.name ?? currentUser.name;
     const role = data.role ?? currentUser.role;
+    const pseudoname = data.pseudoname ?? currentUser.pseudoname;
     const motdepasse = data.motdepasse ?? currentUser.motdepasse;
 
-    const stmt = db.prepare(`
-        UPDATE users SET name = ?, role = ?, motdepasse = ?
+    const result = db.prepare(`
+        UPDATE users SET name = ?, role = ?, pseudoname = ?, motdepasse = ?
         WHERE id = ?
-    `);
-    const result = stmt.run(name, role, motdepasse, id);
+    `).run(name, role, pseudoname, motdepasse, id);
+
     logSucces(`Utilisateur modifié : id ${id}`);
     return result;
 };

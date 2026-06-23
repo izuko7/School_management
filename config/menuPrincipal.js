@@ -26,12 +26,12 @@ const menuPrincipal = async () => {
                 logInfo(`Tentative de connexion`);
                 const connecte = await seConnecter();
                 if (connecte) {
-                    logSucces(`Connexion réussie — utilisateur: ${session.userConnecter.nom}, rôle: ${session.userConnecter.role}`);
+                    logSucces(`Connexion réussie — utilisateur: ${session.userConnecter.name}, rôle: ${session.userConnecter.role}`); // ✅ .nom → .name
                     if (session.userConnecter.role === "admin") await menuAdmin();
                     else if (session.userConnecter.role === "teacher") await menuTeacher();
                     else if (session.userConnecter.role === "student") await menuStudent();
                     else {
-                        console.log(" Rôle inconnu.");
+                        console.log("Rôle inconnu.");
                         logError(`Rôle inconnu détecté : ${session.userConnecter.role}`);
                     }
                 } else {
@@ -41,13 +41,13 @@ const menuPrincipal = async () => {
             }
             case "0":
                 actif = false;
-                console.log("\nAu revoir !  Merci");
+                console.log("\nAu revoir ! Merci");
                 logInfo(`Fermeture de l'application`);
                 fermerInterface();
                 break;
             default:
                 logWarn(`Choix invalide saisi : "${choix}"`);
-                console.log(" Choix invalide.");
+                console.log("Choix invalide.");
         }
     }
 };

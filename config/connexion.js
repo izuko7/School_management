@@ -1,5 +1,4 @@
 import { question } from "./interface.js";
-import { getAllUsers } from "../services/userService.js";
 import db from "../db/database.js";
 import { logAuth, logWarn, logError } from "../utils/logger.js";
 
@@ -7,15 +6,17 @@ export const session = { userConnecter: null, student: null };
 
 const seConnecter = async () => {
     console.log("\n≈≈≈ CONNEXION ≈≈≈");
-    const nom = await question("Nom : ");
+    const pseudoname = await question("Pseudo : ");
     const motdepasse = await question("Mot de passe : ");
 
-    const users = getAllUsers();
-    const user = users.find(u => u.name === nom && u.motdepasse === motdepasse);
+    // Vérification 
+    const user = db.prepare(`
+        SELECT * FROM users WHERE pseudoname = ?
+    `).get(pseudoname);
 
-    if (!user) {
-        console.log("Utilisateur introuvable. Verifiez votre nom et mot de passe.");
-        logWarn(`Tentative de connexion échouée — nom saisi : "${nom}"`);
+    if (!user || user.motdepasse !== motdepasse) {
+        console.log("Pseudo ou mot de passe incorrect.");
+        logWarn(`Tentative de connexion échouée — pseudo : "${pseudoname}"`);
         return false;
     }
 
@@ -23,14 +24,12 @@ const seConnecter = async () => {
 
     if (user.role === "student") {
         const student = db.prepare(`
-            SELECT * FROM students 
-            WHERE LOWER(nom) = LOWER(?) 
-            OR LOWER(prenom) = LOWER(?)
-        `).get(user.name, user.name);
+            SELECT * FROM students WHERE user_id = ?
+        `).get(user.id);
 
         if (!student) {
-            console.log("Aucun etudiant trouve correspondant a votre compte.");
-            logError(`Compte étudiant sans correspondance en base — nom : "${nom}"`);
+            console.log("Aucun étudiant trouvé correspondant à votre compte.");
+            logError(`Compte étudiant sans correspondance — user_id : ${user.id}`);
             session.userConnecter = null;
             return false;
         }

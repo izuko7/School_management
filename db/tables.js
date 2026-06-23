@@ -2,12 +2,12 @@ import db from "./database.js";
 import { aujourdHui, hier, datePrecise } from "../config/date.js";
 
 // TABLE USERS
-
 const tableUsers = `
     CREATE TABLE IF NOT EXISTS users(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
         role TEXT NOT NULL,
+        pseudoname TEXT NOT NULL,
         motdepasse TEXT NOT NULL
     )
 `;
@@ -15,7 +15,6 @@ db.exec(tableUsers);
 
 
 // TABLE STUDENTS
-
 const tableStudents = `
     CREATE TABLE IF NOT EXISTS students(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -23,27 +22,28 @@ const tableStudents = `
         nom TEXT NOT NULL,
         prenom TEXT NOT NULL,
         age INTEGER NOT NULL,
-        classe TEXT NOT NULL
+        classe TEXT NOT NULL,
+        user_id INTEGER UNIQUE,
+        FOREIGN KEY (user_id) REFERENCES users(id)
     )
 `;
 db.exec(tableStudents);
 
 
 // TABLE TEACHERS
-
 const tableTeachers = `
      CREATE TABLE IF NOT EXISTS teachers(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         nom TEXT NOT NULL,
-        matiere TEXT
+        matiere TEXT,
+        user_id INTEGER UNIQUE,
+        FOREIGN KEY (user_id) REFERENCES users(id)
     )
 `;
 db.exec(tableTeachers);
 
 
 // TABLE SUBJECTS
-
-
 const tableSubjects = `
     CREATE TABLE IF NOT EXISTS subjects(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -56,7 +56,6 @@ db.exec(tableSubjects);
 
 
 // TABLE GRADES
-
 const tableGrades = `
     CREATE TABLE IF NOT EXISTS grades(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -71,7 +70,6 @@ db.exec(tableGrades);
 
 
 // TABLE ABSENCES
-
 const tableAbsences = `
      CREATE TABLE IF NOT EXISTS absences(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -82,4 +80,3 @@ const tableAbsences = `
     )
 `;
 db.exec(tableAbsences);
-
