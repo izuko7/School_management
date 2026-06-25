@@ -2,7 +2,8 @@ import { question } from "../interface.js";
 import {
     getClassement, getNbAbsenceParEtudiant, getTauxPresence,
     getMeilleurParMatiere, getPireParMatiere,
-    getMeilleurEtudiant, getPireEtudiant } from "../../services/statistiqueService.js";
+    getMeilleurEtudiant, getPireEtudiant
+} from "../../services/statistiqueService.js";
 import { getSubjectByName } from "../../services/subjectService.js";
 
 const gestionStatistiques = async () => {
@@ -73,9 +74,10 @@ const gestionStatistiques = async () => {
             }
             case "4": {
                 const nom = await question("Nom de la matiere : ");
-                const subject = getSubjectByName(nom);
+                const classe = await question("Classe : "); 
+                const subject = getSubjectByName(nom, classe);
                 if (!subject) {
-                    console.log(`Matiere "${nom}" introuvable.`);
+                    console.log(` Matiere "${nom}" (${classe}) introuvable.`);
                     break;
                 }
                 const meilleur = getMeilleurParMatiere(subject.id);
@@ -86,12 +88,12 @@ const gestionStatistiques = async () => {
                 if (meilleur) {
                     console.log("┌─────────────────────────────────────┐");
                     console.log(`│ Meilleur : ${meilleur.nom} ${meilleur.prenom}`);
-                    console.log(`│ Moyenne : ${parseFloat(meilleur.moyenne).toFixed(2)}/20`);
+                    console.log(`│ Moyenne  : ${parseFloat(meilleur.moyenne).toFixed(2)}/20`);
                     console.log("└─────────────────────────────────────┘");
                 }
                 if (pire) {
                     console.log("┌─────────────────────────────────────┐");
-                    console.log(`│ Pire : ${pire.nom} ${pire.prenom}`);
+                    console.log(`│ Pire    : ${pire.nom} ${pire.prenom}`);
                     console.log(`│ Moyenne : ${parseFloat(pire.moyenne).toFixed(2)}/20`);
                     console.log("└─────────────────────────────────────┘");
                 }

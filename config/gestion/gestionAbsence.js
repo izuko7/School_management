@@ -38,15 +38,15 @@ const gestionAbsence = async () => {
             }
             case "2": {
                 const student_id = await question("ID de l'etudiant : ");
-                console.log(`Date du jour : ${aujourdHui()}`); 
-                const dateReponse = await question("Utiliser la date du jour ? (Y/n) : ");
-                const date = dateReponse.trim().toLowerCase() === "y"
-                    ? aujourdHui()  
+                console.log(`Date du jour : ${aujourdHui()}`);
+                const dateReponse = await question("Utiliser la date du jour ? (Oui/non) : ");
+                const date = dateReponse.trim().toLowerCase() === "oui"
+                    ? aujourdHui()
                     : await question("Date (YYYY-MM-DD) : ");
-                const status = await question("Status (present/absent/retard) : ");
+                const status = await question("Status (Justifiée/Non justifiée) : ");
                 try {
                     createAbsence(Number(student_id), date, status);
-                    console.log(" Absence ajoutee.");
+                    console.log("Absence ajoutee.");
                 } catch (e) {
                     console.log(` Erreur : ${e.message}`);
                 }

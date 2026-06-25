@@ -12,6 +12,12 @@ const createAbsence = (student_id, date, status) => {
         throw new Error(`Etudiant avec l'id ${student_id} introuvable.`);
     }
 
+    // validation du status
+    const statusValides = ["Justifiée", "Non justifiée"];
+    if (!statusValides.includes(status)) {
+        throw new Error(`Status invalide. Valeurs acceptées : Justifiée / Non justifiée`);
+    }
+
     const absence = new Absence(student_id, date, status);
     const result = db.prepare(`
         INSERT INTO absences(student_id, date, status) VALUES(?, ?, ?)
