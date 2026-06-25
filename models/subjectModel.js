@@ -1,10 +1,11 @@
 // Création de la classe Matière
 
-import { deflate } from "node:zlib";
+
 
 class Subject {
-    constructor(nom, teacher_id){
+    constructor(nom, classe, teacher_id){
         this.nom = nom;
+        this.classe = classe;
         this.teacher_id = teacher_id;
     }
 }

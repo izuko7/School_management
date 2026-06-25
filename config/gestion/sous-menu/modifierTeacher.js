@@ -1,10 +1,12 @@
 import { question } from "../../interface.js";
-import { updateTeacher, getTeacherById } from "../../../services/teacherService.js"; // ← ajout
+import { updateTeacher, getTeacherById } from "../../../services/teacherService.js";
+import { logInfo, logSucces, logError, logWarn } from "../../../utils/logger.js";
 
 const modifierTeacher = async () => {
     let actif = true;
     while (actif) {
-        console.log("--- MODIFIER UN ENSEIGNANT ---");
+        logInfo("Affichage menu modification enseignant.");
+        console.log("\n--- MODIFIER UN ENSEIGNANT ---");
         console.log("1. Modifier le nom");
         console.log("2. Modifier la matière");
         console.log("0. Retour");
@@ -16,15 +18,18 @@ const modifierTeacher = async () => {
                 const id = await question("ID à modifier : ");
                 const teacher = getTeacherById(Number(id));
                 if (!teacher) {
-                    console.log("❌ Enseignant introuvable.");
+                    logWarn(`Modification nom échouée : enseignant id ${id} introuvable.`);
+                    console.log(" Enseignant introuvable.");
                     break;
                 }
                 const nom = await question("Nouveau nom : ");
                 try {
                     updateTeacher(Number(id), { nom });
-                    console.log("✏️  Nom mis à jour.");
+                    logSucces(`Nom enseignant id ${id} modifié : "${nom}"`);
+                    console.log(" Nom mis à jour.");
                 } catch (e) {
-                    console.log(`❌ Erreur : ${e.message}`);
+                    logError(`Échec modification nom enseignant id ${id} : ${e.message}`);
+                    console.log(` Erreur : ${e.message}`);
                 }
                 break;
             }
@@ -32,23 +37,28 @@ const modifierTeacher = async () => {
                 const id = await question("ID à modifier : ");
                 const teacher = getTeacherById(Number(id));
                 if (!teacher) {
-                    console.log("❌ Enseignant introuvable.");
+                    logWarn(`Modification matière échouée : enseignant id ${id} introuvable.`);
+                    console.log(" Enseignant introuvable.");
                     break;
                 }
                 const matiere = await question("Nouvelle matière : ");
                 try {
                     updateTeacher(Number(id), { matiere });
-                    console.log("✏️  Matière mise à jour.");
+                    logSucces(`Matière enseignant id ${id} modifiée : "${matiere}"`);
+                    console.log(" Matière mise à jour.");
                 } catch (e) {
-                    console.log(`❌ Erreur : ${e.message}`);
+                    logError(`Échec modification matière enseignant id ${id} : ${e.message}`);
+                    console.log(` Erreur : ${e.message}`);
                 }
                 break;
             }
             case "0":
+                logInfo("Retour depuis menu modification enseignant.");
                 actif = false;
                 break;
             default:
-                console.log("❌ Choix invalide.");
+                logWarn(`Choix invalide dans modification enseignant : "${choix}"`);
+                console.log(" Choix invalide.");
         }
     }
 };

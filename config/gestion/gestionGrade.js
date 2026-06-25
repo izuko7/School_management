@@ -36,10 +36,10 @@ const gestionGrades = async () => {
                 } else {
                     grades.forEach(grade => {
                         console.log("┌─────────────────────────────────────┐");
-                        console.log(`│ ID : ${grade.id}`);
+                        console.log(`│ ID       : ${grade.id}`);
                         console.log(`│ Etudiant : ${grade.nom} ${grade.prenom}`);
-                        console.log(`│ Matiere : ${grade.matiere}`);
-                        console.log(`│ Note : ${grade.note}/20`);
+                        console.log(`│ Matiere  : ${grade.matiere}`);
+                        console.log(`│ Note     : ${grade.note}/20`);
                         console.log("└─────────────────────────────────────┘");
                     });
                 }
@@ -49,8 +49,12 @@ const gestionGrades = async () => {
                 const student_id = await question("ID de l'etudiant : ");
                 const subject_id = await question("ID de la matiere : ");
                 const note = await question("Note sur 20 : ");
-                createGrade(Number(student_id), Number(subject_id), Number(note));
-                console.log("Note ajoutee.");
+                try {
+                    createGrade(Number(student_id), Number(subject_id), Number(note));
+                    console.log(" Note ajoutee.");
+                } catch (e) {
+                    console.log(`Erreur : ${e.message}`);
+                }
                 break;
             }
             case "3": {
@@ -58,55 +62,68 @@ const gestionGrades = async () => {
                 const subject_id = await question("ID de la matiere : ");
                 const saisie = await question("Notes separees par des virgules (ex: 12,14,16) : ");
                 const notes = saisie.split(",").map(n => Number(n.trim()));
-                createManyGrades(Number(student_id), Number(subject_id), notes);
-                console.log(`${notes.length} note(s) ajoutee(s).`);
+                try {
+                    createManyGrades(Number(student_id), Number(subject_id), notes);
+                    console.log(`${notes.length} note(s) ajoutee(s).`);
+                } catch (e) {
+                    console.log(`Erreur : ${e.message}`);
+                }
                 break;
             }
             case "4": {
                 const student_id = await question("ID de l'etudiant : ");
-                const grades = getGradesByStudent(Number(student_id));
-                if (grades.length === 0) {
-                    console.log("Aucune note pour cet etudiant.");
-                } else {
-                    console.log("╔════════════════════════════════════════╗");
-                    console.log("║           NOTES DE L'ETUDIANT          ║");
-                    console.log("╚════════════════════════════════════════╝\n");
-                    grades.forEach(grade => {
-                        console.log("┌─────────────────────────────────────┐");
-                        console.log(`│ ID : ${grade.id}`);
-                        console.log(`│ Etudiant : ${grade.nom} ${grade.prenom}`);
-                        console.log(`│ Matiere : ${grade.matiere}`);
-                        console.log(`│ Note : ${grade.note}/20`);
-                        console.log("└─────────────────────────────────────┘");
-                    });
+                try {
+                    const grades = getGradesByStudent(Number(student_id));
+                    if (grades.length === 0) {
+                        console.log("Aucune note pour cet etudiant.");
+                    } else {
+                        console.log("╔════════════════════════════════════════╗");
+                        console.log("║           NOTES DE L'ETUDIANT          ║");
+                        console.log("╚════════════════════════════════════════╝\n");
+                        grades.forEach(grade => {
+                            console.log("┌─────────────────────────────────────┐");
+                            console.log(`│ ID       : ${grade.id}`);
+                            console.log(`│ Matiere  : ${grade.matiere}`);
+                            console.log(`│ Note     : ${grade.note}/20`);
+                            console.log("└─────────────────────────────────────┘");
+                        });
+                    }
+                } catch (e) {
+                    console.log(`Erreur : ${e.message}`);
                 }
                 break;
             }
             case "5": {
                 const nom = await question("Nom de la matiere : ");
-                const grades = getGradesBySubjectName(nom);
-                if (grades.length === 0) {
-                    console.log("Aucune note pour cette matiere.");
-                } else {
-                    console.log("╔════════════════════════════════════════╗");
-                    console.log("║           NOTES PAR MATIERE            ║");
-                    console.log("╚════════════════════════════════════════╝\n");
-                    grades.forEach(grade => {
-                        console.log("┌─────────────────────────────────────┐");
-                        console.log(`│ ID : ${grade.id}`);
-                        console.log(`│ Etudiant : ${grade.nom} ${grade.prenom}`);
-                        console.log(`│ Note : ${grade.note}/20`);
-                        console.log("└─────────────────────────────────────┘");
-                    });
+                const classe = await question("Classe : ");
+                try {
+                    const grades = getGradesBySubjectName(nom, classe);
+                    if (grades.length === 0) {
+                        console.log("Aucune note pour cette matiere.");
+                    } else {
+                        console.log("╔════════════════════════════════════════╗");
+                        console.log("║           NOTES PAR MATIERE            ║");
+                        console.log("╚════════════════════════════════════════╝\n");
+                        grades.forEach(grade => {
+                            console.log("┌─────────────────────────────────────┐");
+                            console.log(`│ ID       : ${grade.id}`);
+                            console.log(`│ Etudiant : ${grade.nom} ${grade.prenom}`);
+                            console.log(`│ Note     : ${grade.note}/20`);
+                            console.log("└─────────────────────────────────────┘");
+                        });
+                    }
+                } catch (e) {
+                    console.log(` Erreur : ${e.message}`);
                 }
                 break;
             }
             case "6": {
                 const student_id = await question("ID de l'etudiant : ");
                 const nom_matiere = await question("Nom de la matiere : ");
-                const subject = getSubjectByName(nom_matiere);
+                const classe = await question("Classe : ");
+                const subject = getSubjectByName(nom_matiere, classe);
                 if (!subject) {
-                    console.log(`Matiere "${nom_matiere}" introuvable.`);
+                    console.log(`Matiere "${nom_matiere}" (${classe}) introuvable.`);
                     break;
                 }
                 const moyenne = getMoyenneBySubject(Number(student_id), subject.id);
@@ -121,34 +138,46 @@ const gestionGrades = async () => {
             }
             case "7": {
                 const student_id = await question("ID de l'etudiant : ");
-                const moyenne = getMoyenneGenerale(Number(student_id));
-                if (moyenne === null) {
-                    console.log("Aucune note trouvee.");
-                } else {
-                    console.log("┌─────────────────────────────────────┐");
-                    console.log(`│ Moyenne generale : ${moyenne.toFixed(2)}/20`);
-                    console.log("└─────────────────────────────────────┘");
+                try {
+                    const moyenne = getMoyenneGenerale(Number(student_id));
+                    if (moyenne === null) {
+                        console.log("Aucune note trouvee.");
+                    } else {
+                        console.log("┌─────────────────────────────────────┐");
+                        console.log(`│ Moyenne generale : ${moyenne.toFixed(2)}/20`);
+                        console.log("└─────────────────────────────────────┘");
+                    }
+                } catch (e) {
+                    console.log(` Erreur : ${e.message}`);
                 }
                 break;
             }
             case "8": {
                 const id = await question("ID de la note a modifier : ");
                 const note = await question("Nouvelle note (0-20) : ");
-                updateGrade(Number(id), { note: Number(note) });
-                console.log("Note mise a jour.");
+                try {
+                    updateGrade(Number(id), { note: Number(note) });
+                    console.log(" Note mise a jour.");
+                } catch (e) {
+                    console.log(` Erreur : ${e.message}`);
+                }
                 break;
             }
             case "9": {
                 const id = await question("ID de la note a supprimer : ");
-                deleteGrade(Number(id));
-                console.log("Note supprimee.");
+                try {
+                    deleteGrade(Number(id));
+                    console.log("🗑️  Note supprimee.");
+                } catch (e) {
+                    console.log(` Erreur : ${e.message}`);
+                }
                 break;
             }
             case "0":
                 actif = false;
                 break;
             default:
-                console.log("Choix invalide.");
+                console.log(" Choix invalide.");
         }
     }
 };

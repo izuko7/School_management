@@ -4,9 +4,9 @@ import { modifierSubject } from "./sous-menu/modifierSubject.js";
 
 const gestionSubject = async () => {
     let actif = true;
-    while(actif) {
+    while (actif) {
         console.log("\n〚=== GESTION DES MATIERES ===〛");
-        console.log("1. Lister toute les matières");
+        console.log("1. Lister toutes les matières");
         console.log("2. Ajouter une matière");
         console.log("3. Supprimer une matière");
         console.log("4. Rechercher une matière");
@@ -21,10 +21,17 @@ const gestionSubject = async () => {
                 console.log("╔════════════════════════════════════════╗");
                 console.log("║           LISTE DES MATIERES           ║");
                 console.log("╚════════════════════════════════════════╝\n");
+
+                if (subjects.length === 0) {
+                    console.log("Aucune matière enregistrée.");
+                    break;
+                }
+
                 subjects.forEach(subject => {
                     console.log("┌─────────────────────────────────────┐");
-                    console.log(`│ ID : ${subject.id}`);
-                    console.log(`│ Nom : ${subject.nom}`);
+                    console.log(`│ ID            : ${subject.id}`);
+                    console.log(`│ Nom           : ${subject.nom}`);
+                    console.log(`│ Classe        : ${subject.classe}`); 
                     console.log(`│ Professeur ID : ${subject.teacher_id}`);
                     console.log("└─────────────────────────────────────┘");
                 });
@@ -32,32 +39,28 @@ const gestionSubject = async () => {
             }
             case "2": {
                 const nom = await question("Nom de la matière : ");
+                const classe = await question("Classe : ");    
                 const teacher_id = await question("ID du professeur associé : ");
                 try {
-                    const existing = getSubjectByName(nom);
+                    const existing = getSubjectByName(nom, classe);
                     if (existing) {
-                        console.log(`⚠️  La matière "${nom}" existe déjà.`);
+                        console.log(`La matière "${nom}" existe déjà pour la classe ${classe}.`);
                     } else {
-                        createSubject(nom, Number(teacher_id));
-                        console.log("✅ Matière ajoutée.");
+                        createSubject(nom, classe, Number(teacher_id));
+                        console.log(" Matière ajoutée.");
                     }
                 } catch (e) {
-                    console.log(`❌ Erreur : ${e.message}`);
+                    console.log(` Erreur : ${e.message}`);
                 }
                 break;
             }
             case "3": {
-                const nom = await question("Nom de la matière à supprimer : ");
+                const id = await question("ID de la matière à supprimer : ");
                 try {
-                    const subject = getSubjectByName(nom);
-                    if(!subject) {
-                        console.log(`❌ Matière "${nom}" introuvable.`);
-                    } else {
-                        deleteSubject(subject.id);
-                        console.log(`🗑️  Matière "${nom}" supprimée.`)
-                    }
-                } catch(e) {
-                    console.log(`❌ Erreur : ${e.message}`);
+                    deleteSubject(Number(id));
+                    console.log("Matière supprimée.");
+                } catch (e) {
+                    console.log(` Erreur : ${e.message}`);
                 }
                 break;
             }
@@ -65,11 +68,12 @@ const gestionSubject = async () => {
                 const id = await question("ID de la matière : ");
                 const subject = getSubjectById(Number(id));
                 if (!subject) {
-                    console.log("❌ Matière introuvable.");
+                    console.log(" Matière introuvable.");
                 } else {
                     console.log("┌─────────────────────────────────────┐");
-                    console.log(`│ ID : ${subject.id}`);
-                    console.log(`│ Nom : ${subject.nom}`);
+                    console.log(`│ ID            : ${subject.id}`);
+                    console.log(`│ Nom           : ${subject.nom}`);
+                    console.log(`│ Classe        : ${subject.classe}`);
                     console.log(`│ Professeur ID : ${subject.teacher_id}`);
                     console.log("└─────────────────────────────────────┘");
                 }
@@ -83,10 +87,9 @@ const gestionSubject = async () => {
                 actif = false;
                 break;
             default:
-                console.log("❌ Choix invalide.");
+                console.log("Choix invalide.");
         }
-
     }
-}
+};
 
-export { gestionSubject }
+export { gestionSubject };

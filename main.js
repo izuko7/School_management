@@ -2,23 +2,38 @@ import "./db/tables.js";
 import { menuPrincipal } from "./config/menuPrincipal.js";
 import { createUser } from "./services/userService.js";
 import { createStudent } from "./services/studentService.js";
+import { createTeacher } from "./services/teacherService.js";
+import { logInfo, logSucces, logWarn } from "./utils/logger.js";
 import db from "./db/database.js";
 
-const seedData = () => { 
+const seedData = () => {
     const dejaInsere = db.prepare(`SELECT * FROM users`).all();
-    if (dejaInsere.length > 0) return;
+    if (dejaInsere.length > 0) {
+        logWarn("Données déjà présentes, seed ignoré.");
+        return;
+    }
 
-    console.log("🌱 Insertion des données de test...");
+    logInfo("Insertion des données de test...");
 
+    // Admin
     const admin = createUser("Super Admin", "admin", "admin123", "admin1234");
-    console.log("✅ Admin créé — pseudo: admin123 / mdp: admin1234");
+    logSucces(`Admin créé — pseudo: admin123 / mdp: admin1234 / ID: ${admin.lastInsertRowid}`);
 
+    // Student
     const userStudent = createUser("Jean Dupont", "student", "jean123", "jean1234");
-    const user_id = userStudent.lastInsertRowid;
-    console.log(`✅ User student créé — pseudo: jean123 / mdp: jean1234 / ID: ${user_id}`);
+    const studentUserId = userStudent.lastInsertRowid;
+    logSucces(`User student créé — pseudo: jean123 / mdp: jean1234 / ID: ${studentUserId}`);
 
-    createStudent("ETU001", "Dupont", "Jean", 20, "L1", user_id);
-    console.log("✅ Étudiant créé — matricule: ETU001");
+    createStudent("ETU001", "Dupont", "Jean", 20, "L1", studentUserId);
+    logSucces("Étudiant créé — matricule: ETU001");
+
+    // Teacher
+    const userTeacher = createUser("Marie Curie", "teacher", "marie123", "marie1234");
+    const teacherUserId = userTeacher.lastInsertRowid;
+    logSucces(`User teacher créé — pseudo: marie123 / mdp: marie1234 / ID: ${teacherUserId}`);
+
+    createTeacher("Curie", "Physique", teacherUserId);
+    logSucces("Enseignant créé — nom: Curie / matière: Physique");
 };
 
 seedData();

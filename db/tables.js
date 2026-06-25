@@ -1,5 +1,5 @@
 import db from "./database.js";
-import { aujourdHui, hier, datePrecise } from "../config/date.js";
+
 
 // TABLE USERS
 const tableUsers = `
@@ -12,7 +12,6 @@ const tableUsers = `
     )
 `;
 db.exec(tableUsers);
-
 
 // TABLE STUDENTS
 const tableStudents = `
@@ -29,10 +28,9 @@ const tableStudents = `
 `;
 db.exec(tableStudents);
 
-
 // TABLE TEACHERS
 const tableTeachers = `
-     CREATE TABLE IF NOT EXISTS teachers(
+    CREATE TABLE IF NOT EXISTS teachers(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         nom TEXT NOT NULL,
         matiere TEXT,
@@ -42,18 +40,18 @@ const tableTeachers = `
 `;
 db.exec(tableTeachers);
 
-
 // TABLE SUBJECTS
 const tableSubjects = `
     CREATE TABLE IF NOT EXISTS subjects(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        nom TEXT UNIQUE NOT NULL,
+        nom TEXT NOT NULL,
+        classe TEXT NOT NULL,
         teacher_id INTEGER,
+        UNIQUE(nom, classe),
         FOREIGN KEY (teacher_id) REFERENCES teachers(id)
     )
 `;
 db.exec(tableSubjects);
-
 
 // TABLE GRADES
 const tableGrades = `
@@ -68,10 +66,9 @@ const tableGrades = `
 `;
 db.exec(tableGrades);
 
-
 // TABLE ABSENCES
 const tableAbsences = `
-     CREATE TABLE IF NOT EXISTS absences(
+    CREATE TABLE IF NOT EXISTS absences(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         student_id INTEGER NOT NULL,
         date TEXT NOT NULL,

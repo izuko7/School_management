@@ -1,9 +1,10 @@
 // Création de la classe enseignant
 
 class Teacher {
-    constructor(nom, matiere) {
+    constructor(nom, matiere, user_id = null) {
         this.nom = nom;
         this.matiere = matiere;
+        this.user_id = user_id;
     }
 }
 

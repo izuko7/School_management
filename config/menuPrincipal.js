@@ -26,7 +26,7 @@ const menuPrincipal = async () => {
                 logInfo(`Tentative de connexion`);
                 const connecte = await seConnecter();
                 if (connecte) {
-                    logSucces(`Connexion réussie — utilisateur: ${session.userConnecter.name}, rôle: ${session.userConnecter.role}`); // ✅ .nom → .name
+                    logSucces(`Connexion réussie — utilisateur: ${session.userConnecter.name}, rôle: ${session.userConnecter.role}`);
                     if (session.userConnecter.role === "admin") await menuAdmin();
                     else if (session.userConnecter.role === "teacher") await menuTeacher();
                     else if (session.userConnecter.role === "student") await menuStudent();

@@ -1,11 +1,12 @@
 import { question } from "../interface.js";
 import { createTeacher, getAllTeachers, getTeacherById, deleteTeacher } from "../../services/teacherService.js";
-import { createSubject, getSubjectByName } from "../../services/subjectService.js";
 import { modifierTeacher } from "./sous-menu/modifierTeacher.js";
+import { logInfo, logSucces, logError, logWarn } from "../../utils/logger.js";
 
 const gestionTeacher = async () => {
     let actif = true;
     while (actif) {
+        logInfo("Affichage menu gestion enseignants.");
         console.log("\n〚=== GESTION DES ENSEIGNANTS ===〛");
         console.log("1. Lister tous les enseignants");
         console.log("2. Ajouter un enseignant");
@@ -18,73 +19,85 @@ const gestionTeacher = async () => {
 
         switch (choix) {
             case "1": {
+                logInfo("Listage de tous les enseignants.");
                 const teachers = getAllTeachers();
                 console.log("╔════════════════════════════════════════╗");
                 console.log("║          LISTE DES ENSEIGNANTS         ║");
                 console.log("╚════════════════════════════════════════╝\n");
-                teachers.forEach(teacher => {
-                    console.log("┌─────────────────────────────────────┐");
-                    console.log(`│ ID : ${teacher.id}`);
-                    console.log(`│ Nom : ${teacher.nom}`);
-                    console.log(`│ Matière : ${teacher.matiere}`);
-                    console.log("└─────────────────────────────────────┘");
-                });
+                if (teachers.length === 0) {
+                    logWarn("Aucun enseignant trouvé.");
+                    console.log("Aucun enseignant enregistré.");
+                } else {
+                    teachers.forEach(teacher => {
+                        console.log("┌─────────────────────────────────────┐");
+                        console.log(`│ ID      : ${teacher.id}`);
+                        console.log(`│ Nom     : ${teacher.nom}`);
+                        console.log(`│ Matière : ${teacher.matiere}`);
+                        console.log(`│ User ID : ${teacher.user_id ?? "Non lié"}`);
+                        console.log("└─────────────────────────────────────┘");
+                    });
+                }
                 break;
             }
             case "2": {
                 const nom = await question("Nom : ");
                 const matiere = await question("Matière : ");
+                const user_id = await question("ID utilisateur (rôle teacher) : ");
                 try {
-                    const result = createTeacher(nom, matiere);
+                    const result = createTeacher(nom, matiere, Number(user_id));
                     const teacherId = result.lastInsertRowid;
-                    console.log("✅ Enseignant ajouté.");
-
-                    const existingSubject = getSubjectByName(matiere);
-                    if (existingSubject) {
-                        console.log(`⚠️  La matière "${matiere}" existe déjà, aucune création.`);
-                    } else {
-                        createSubject(matiere, teacherId);
-                        console.log(`✅ Matière "${matiere}" créée automatiquement.`);
-                    }
+                    logSucces(`Enseignant ajouté : ${nom} (user_id ${user_id}) — ID : ${teacherId}`);
+                    // Suppression de la création automatique de matière
+                    // Les matières sont créées depuis Gestion Matières avec la classe
+                    console.log(` Enseignant ajouté — ID : ${teacherId}`);
+                    console.log(`  Pensez à créer sa matière dans Gestion Matières avec sa classe.`);
                 } catch (e) {
-                    console.log(`❌ Erreur : ${e.message}`);
+                    logError(`Échec ajout enseignant : ${e.message}`);
+                    console.log(` Erreur : ${e.message}`);
                 }
                 break;
             }
             case "3": {
                 const id = await question("ID à supprimer : ");
-                const teacher = getTeacherById(Number(id));
-                if (!teacher) {
-                    console.log("❌ Enseignant introuvable.");
-                } else {
+                try {
                     deleteTeacher(Number(id));
-                    console.log("🗑️  Enseignant supprimé."); 
+                    logSucces(`Enseignant supprimé : id ${id}`);
+                    console.log("  Enseignant supprimé.");
+                } catch (e) {
+                    logError(`Échec suppression enseignant id ${id} : ${e.message}`);
+                    console.log(` Erreur : ${e.message}`);
                 }
                 break;
             }
             case "4": {
-                const id = await question("ID de l'enseignant : "); 
+                const id = await question("ID de l'enseignant : ");
                 const teacher = getTeacherById(Number(id));
                 if (!teacher) {
-                    console.log("❌ Enseignant introuvable.");
+                    logWarn(`Enseignant id ${id} introuvable.`);
+                    console.log(" Enseignant introuvable.");
                 } else {
+                    logInfo(`Enseignant trouvé : id ${id}`);
                     console.log("┌─────────────────────────────────────┐");
-                    console.log(`│ ID : ${teacher.id}`);
-                    console.log(`│ Nom : ${teacher.nom}`);
+                    console.log(`│ ID      : ${teacher.id}`);
+                    console.log(`│ Nom     : ${teacher.nom}`);
                     console.log(`│ Matière : ${teacher.matiere}`);
+                    console.log(`│ User ID : ${teacher.user_id ?? "Non lié"}`);
                     console.log("└─────────────────────────────────────┘");
                 }
                 break;
             }
             case "5": {
+                logInfo("Accès menu modification enseignant.");
                 await modifierTeacher();
                 break;
             }
             case "0":
+                logInfo("Retour menu principal depuis gestion enseignants.");
                 actif = false;
                 break;
             default:
-                console.log("❌ Choix invalide.");
+                logWarn(`Choix invalide dans gestion enseignants : "${choix}"`);
+                console.log(" Choix invalide.");
         }
     }
 };

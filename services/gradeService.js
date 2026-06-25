@@ -99,7 +99,7 @@ const getGradesByStudent = (student_id) => {
     return result;
 };
 
-// Afficher les notes par matière
+// Afficher les notes par matière (par id)
 const getGradesBySubject = (subject_id) => {
     logInfo(`Récupération des notes : matière id ${subject_id}`);
     const subject = db.prepare("SELECT id FROM subjects WHERE id = ?").get(subject_id);
@@ -119,13 +119,15 @@ const getGradesBySubject = (subject_id) => {
     return result;
 };
 
-// Rechercher les notes par nom de matière
-const getGradesBySubjectName = (nom) => {
-    logInfo(`Récupération des notes par nom de matière : "${nom}"`);
-    const subject = db.prepare("SELECT * FROM subjects WHERE nom = ?").get(nom);
+// Rechercher les notes par nom de matière et classe 
+const getGradesBySubjectName = (nom, classe) => {
+    logInfo(`Récupération des notes par nom de matière : "${nom}" (${classe})`);
+    const subject = db.prepare(`
+        SELECT * FROM subjects WHERE nom = ? AND classe = ?
+    `).get(nom, classe); // recherche par nom + classe
     if (!subject) {
-        logError(`Notes matière échouée : matière "${nom}" introuvable.`);
-        throw new Error(`Matiere "${nom}" introuvable.`);
+        logError(`Notes matière échouée : matière "${nom}" (${classe}) introuvable.`);
+        throw new Error(`Matiere "${nom}" (${classe}) introuvable.`);
     }
 
     const result = db.prepare(`
@@ -135,7 +137,7 @@ const getGradesBySubjectName = (nom) => {
         WHERE grades.subject_id = ?
         ORDER BY students.nom
     `).all(subject.id);
-    if (result.length === 0) logWarn(`Aucune note trouvée pour matière "${nom}".`);
+    if (result.length === 0) logWarn(`Aucune note trouvée pour matière "${nom}" (${classe}).`);
     return result;
 };
 
@@ -152,7 +154,7 @@ const getMoyenneBySubject = (student_id, subject_id) => {
     return notes.reduce((acc, n) => acc + n, 0) / notes.length;
 };
 
-// Moyenne générale d'un étudiant
+// Moyenne générale d'un étudiant 
 const getMoyenneGenerale = (student_id) => {
     const student = db.prepare("SELECT id FROM students WHERE id = ?").get(student_id);
     if (!student) {
@@ -160,7 +162,11 @@ const getMoyenneGenerale = (student_id) => {
         throw new Error(`Étudiant avec l'id ${student_id} introuvable.`);
     }
 
-    const subjects = db.prepare(`SELECT DISTINCT subject_id FROM grades`).all();
+    // uniquement les matières où l'étudiant a des notes
+    const subjects = db.prepare(`
+        SELECT DISTINCT subject_id FROM grades WHERE student_id = ?
+    `).all(student_id);
+
     if (subjects.length === 0) return null;
 
     let total = 0;
@@ -168,8 +174,10 @@ const getMoyenneGenerale = (student_id) => {
 
     for (const { subject_id } of subjects) {
         const moyenne = getMoyenneBySubject(student_id, subject_id);
-        total += moyenne ?? 0;
-        count++;
+        if (moyenne !== null) {
+            total += moyenne;
+            count++;
+        }
     }
 
     return count === 0 ? null : total / count;
