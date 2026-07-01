@@ -64,7 +64,7 @@ const menuStudent = async () => {
                 const subject = getSubjectByName(nom_matiere);
                 if (!subject) {
                     logWarn(`Étudiant ${student_id} — matière introuvable : "${nom_matiere}"`);
-                    console.log(`Matiere "${nom_matiere}" introuvable.`);
+                    console.log(`Matière "${nom_matiere}" introuvable.`);
                     break;
                 }
                 const moyenne = getMoyenneBySubject(student_id, subject.id);
