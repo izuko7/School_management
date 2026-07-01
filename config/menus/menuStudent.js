@@ -49,7 +49,7 @@ const menuStudent = async () => {
                 const moyenne = getMoyenneGenerale(student_id);
                 if (moyenne === null) {
                     logWarn(`Étudiant ${student_id} — aucune note pour calculer la moyenne`);
-                    console.log("Aucune note enregistree.");
+                    console.log("Aucune note enregistrée.");
                 } else {
                     logInfo(`Étudiant ${student_id} — moyenne générale : ${moyenne.toFixed(2)}/20`);
                     console.log("┌─────────────────────────────────────┐");
